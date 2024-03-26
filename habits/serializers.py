@@ -16,7 +16,9 @@ class DetailHabitSerializer(serializers.ModelSerializer):
 
     def get_associated(self, instance):
         """ Метод для получения деталей связанной привычки """
-        return PrivateHabitsSerializer(Habit.objects.get(pk=instance.associated.pk)).data
+        if instance.associated:
+            return PrivateHabitsSerializer(Habit.objects.get(pk=instance.associated.pk)).data
+        return None
 
     class Meta:
         model = Habit

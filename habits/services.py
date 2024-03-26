@@ -3,7 +3,7 @@ from django.conf import settings
 
 
 class TelegramBot:
-    URL = f'https://api.telegram.org/bot'
+    URL = 'https://api.telegram.org/bot'
     TOKEN = settings.TELEGRAM_BOT_TOKEN
 
     def send_message(self, user_telegram_id, text):
