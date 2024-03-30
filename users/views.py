@@ -8,6 +8,8 @@ from users.permissions import IsUserOwner
 
 class UserRegistrationAPIView(generics.CreateAPIView):
     """ Представление для регистрации нового пользователя """
+    serializer_class = UserRegistrationSerializer
+
     def post(self, request, *args, **kwargs):
         serializer = UserRegistrationSerializer(data=request.data)
         if serializer.is_valid():
@@ -15,7 +17,7 @@ class UserRegistrationAPIView(generics.CreateAPIView):
             user.set_password(serializer.data['password'])  # сделать зашифрованный пароль
             user.is_active = True  # активация пользователя
             user.save()
-        return Response({'message': 'Пользователь создан успешно.'})
+            return Response({'message': f'Пользователь {user.email} создан успешно.'})
 
 
 class UserUpdateAPIView(generics.UpdateAPIView):
