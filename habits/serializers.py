@@ -8,7 +8,8 @@ class PrivateHabitsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Habit
-        fields = '__all__'
+        fields = ['user', 'place', 'action', 'is_nice', 'associated', 'periodicity', 'fee', 'start_time',
+                  'execution_time', 'is_published']
 
 
 class DetailHabitSerializer(serializers.ModelSerializer):
@@ -22,7 +23,8 @@ class DetailHabitSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Habit
-        fields = '__all__'
+        fields = ['user', 'place', 'action', 'is_nice', 'associated', 'periodicity', 'fee', 'start_time',
+                  'execution_time', 'is_published']
 
 
 class PublicHabitsSerializer(serializers.ModelSerializer):

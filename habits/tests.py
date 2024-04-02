@@ -19,7 +19,7 @@ class HabitTestCase(APITestCase):
             action='test',
             is_nice=True,
             start_time='2024-03-25T19:50:04.914506Z',
-            execution_time='2024-03-25T19:52:04.914506Z',
+            execution_time='100',
             is_published=True,
             user=self.user
         )
@@ -33,7 +33,7 @@ class HabitTestCase(APITestCase):
             'is_nice': True,
             'fee': '',
             'start_time': '2024-03-25T19:50:04.914506Z',
-            'execution_time': '2024-03-25T19:52:04.914506Z',
+            'execution_time': '120',
             'is_published': False,
             'user': 1
         }
@@ -45,9 +45,9 @@ class HabitTestCase(APITestCase):
         )
         self.assertEquals(
             response.json(),
-            {'id': 2, 'place': 'улица', 'action': 'прогулка', 'is_nice': True, 'periodicity': 'Ежедневно',
-             'fee': '', 'start_time': '2024-03-25T19:50:04.914506Z', 'execution_time': '2024-03-25T19:52:04.914506Z',
-             'is_published': False, 'user': 1, 'associated': None}
+            {'id': 2, 'place': 'улица', 'action': 'прогулка', 'is_nice': True, 'periodicity': 1, 'fee': '',
+             'start_time': '2024-03-25T19:50:04.914506Z', 'execution_time': '00:02:00', 'is_published': False,
+             'user': 1, 'associated': None}
         )
 
     def test_get_private_list_habits(self):
@@ -86,8 +86,8 @@ class HabitTestCase(APITestCase):
         self.assertEquals(
             response.json(),
             {'id': self.habit.id, 'associated': None, 'place': 'test', 'action': 'test', 'is_nice': True,
-             'periodicity': 'Ежедневно', 'fee': None, 'start_time': '2024-03-25T19:50:04.914506Z',
-             'execution_time': '2024-03-25T19:52:04.914506Z', 'is_published': True, 'user': self.user.id}
+             'periodicity': 1, 'fee': None, 'start_time': '2024-03-25T19:50:04.914506Z',
+             'execution_time': '00:01:40', 'is_published': True, 'user': self.user.id}
         )
 
     def test_update_habit(self):
@@ -96,7 +96,7 @@ class HabitTestCase(APITestCase):
         data = {
             'place': 'test1',
             'start_time': '2024-03-25T21:50:04.914506Z',
-            'execution_time': '2024-03-25T21:52:04.914506Z'
+            'execution_time': 60
         }
         response = self.client.patch(f'/my_habits/{self.habit.id}/edit/', data=data)
         # print(response.data)
@@ -106,8 +106,8 @@ class HabitTestCase(APITestCase):
         )
         self.assertEquals(
             response.json(),
-            {'id': self.habit.id, 'place': 'test1', 'action': 'test', 'is_nice': True, 'periodicity': 'Ежедневно',
-             'fee': None, 'start_time': '2024-03-25T21:50:04.914506Z', 'execution_time': '2024-03-25T21:52:04.914506Z',
+            {'id': self.habit.id, 'place': 'test1', 'action': 'test', 'is_nice': True, 'periodicity': 1,
+             'fee': None, 'start_time': '2024-03-25T21:50:04.914506Z', 'execution_time': '00:01:00',
              'is_published': True, 'user': self.user.id, 'associated': None}
         )
 
@@ -137,7 +137,7 @@ class HabitValidatorsTestCase(APITestCase):
             action='test_action1',
             is_nice=False,
             start_time='2024-03-25T19:50:04.914506Z',
-            execution_time='2024-03-25T19:52:04.914506Z',
+            execution_time='120',
             is_published=False,
             user=self.user
         )
@@ -151,7 +151,7 @@ class HabitValidatorsTestCase(APITestCase):
             'is_nice': False,
             'fee': 'test_fee',
             'start_time': '2024-03-25T19:50:04.914506Z',
-            'execution_time': '2024-03-25T19:52:04.914506Z',
+            'execution_time': '00:01:00',
             'is_published': False,
             'user': self.user.id,
             'associated': self.habit.id
@@ -176,7 +176,7 @@ class HabitValidatorsTestCase(APITestCase):
             'action': 'test_action2',
             'is_nice': False,
             'start_time': '2024-03-25T19:50:04.914506Z',
-            'execution_time': '2024-03-25T19:52:04.914506Z',
+            'execution_time': '00:01:00',
             'is_published': False,
             'user': self.user.id,
             'associated': self.habit.id
@@ -201,7 +201,7 @@ class HabitValidatorsTestCase(APITestCase):
             'action': 'test_action2',
             'is_nice': False,
             'start_time': '2024-03-25T19:50:04.914506Z',
-            'execution_time': '2024-03-25T19:55:04.914506Z',
+            'execution_time': '00:03:30',
             'is_published': False,
             'user': self.user.id
         }
@@ -224,7 +224,7 @@ class HabitValidatorsTestCase(APITestCase):
             'action': 'test_action2',
             'is_nice': True,
             'start_time': '2024-03-25T19:50:04.914506Z',
-            'execution_time': '2024-03-25T19:52:04.914506Z',
+            'execution_time': '00:01:00',
             'is_published': False,
             'user': self.user.id,
             'fee': 'test_fee'
@@ -239,4 +239,29 @@ class HabitValidatorsTestCase(APITestCase):
             response.json(),
             {'non_field_errors': [ErrorDetail(string='У приятной привычки не может быть вознаграждения или '
                                                      'связанной привычки', code='invalid')]}
+        )
+
+    def test_periodicity(self):
+        """ Тест на валидацию периода выполнения привычки """
+        self.client.force_authenticate(user=self.user)
+        data = {
+            'place': 'test_place2',
+            'action': 'test_action2',
+            'is_nice': True,
+            'start_time': '2024-03-25T19:50:04.914506Z',
+            'execution_time': '00:01:00',
+            'is_published': False,
+            'user': self.user.id,
+            'periodicity': '8'
+        }
+        response = self.client.post('/habits/add/', data=data)
+        # print(response.data)
+        self.assertEquals(
+            response.status_code,
+            status.HTTP_400_BAD_REQUEST
+        )
+        self.assertEquals(
+            response.json(),
+            {'non_field_errors': [
+                ErrorDetail(string='Нельзя выполнять привычку реже чем 1 раз в 7 дней.', code='invalid')]}
         )

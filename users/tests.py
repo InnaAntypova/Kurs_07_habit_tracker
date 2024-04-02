@@ -21,21 +21,20 @@ class UserTestCase(APITestCase):
         response = self.client.post('/users/registration/', data=data)
         self.assertEquals(
             response.status_code,
-            status.HTTP_200_OK
+            status.HTTP_201_CREATED
         )
         self.assertEquals(
             response.json(),
-            {'message': 'Пользователь создан успешно.'}
+            {'message': 'Пользователь test2@test.ru создан успешно.'}
         )
 
     def test_user_update(self):
         """ Тест для редактирования пользователя """
         self.client.force_authenticate(user=self.user)
         data = {
-            'telegram_id': '523215456',
-            'date_joined': '2024-03-26T08:14:48.502241Z',
+            'telegram_id': '523215456'
         }
-        response = self.client.patch(f'/users/edit/{self.user.pk}/', data=data)
+        response = self.client.patch(f'/users/{self.user.pk}/', data=data)
         # print(response.data)
         self.assertEquals(
             response.status_code,
@@ -43,10 +42,7 @@ class UserTestCase(APITestCase):
         )
         self.assertEquals(
             response.json(),
-            {'id': self.user.id, 'password': '', 'last_login': None, 'first_name': '', 'last_name': '',
-             'date_joined': '2024-03-26T08:14:48.502241Z', 'email': 'test1@test.ru', 'avatar': None, 'phone': None,
-             'city': None, 'telegram_id': '523215456', 'is_active': True, 'is_staff': False, 'is_superuser': False,
-             'groups': [], 'user_permissions': []}
+            {'email': 'test1@test.ru', 'avatar': None, 'phone': None, 'city': None, 'telegram_id': '523215456'}
         )
 
     def test_user_profile(self):

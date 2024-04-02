@@ -11,14 +11,14 @@ class HabitValidator:
 
         if field_value.get('associated'):
             field = field_value.get('associated')
-            # print(field)
-            if field.is_nice is False:
+            if not field.is_nice:
                 raise serializers.ValidationError('В связанные привычки могут попадать только приятные привычки')
 
-        if field_value.get('execution_time') > field_value.get('start_time') + datetime.timedelta(seconds=120):
+        if field_value.get('is_nice') and (field_value.get('fee') or field_value.get('associated')):
+            raise serializers.ValidationError('У приятной привычки не может быть вознаграждения или связанной привычки')
+
+        if field_value.get('execution_time') > datetime.timedelta(seconds=120):
             raise serializers.ValidationError('Время выполнения должно быть не больше 2х минут')
 
-        if field_value.get('is_nice'):
-            if field_value.get('fee') or field_value.get('associated'):
-                raise serializers.ValidationError('У приятной привычки не может быть вознаграждения или '
-                                                  'связанной привычки')
+        if field_value.get('periodicity') and field_value.get('periodicity') > 7:
+            raise serializers.ValidationError('Нельзя выполнять привычку реже чем 1 раз в 7 дней.')

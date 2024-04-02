@@ -1,4 +1,4 @@
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework.response import Response
 from users.models import User
 from users.serializers import UserRegistrationSerializer, UserSerializer
@@ -17,7 +17,7 @@ class UserRegistrationAPIView(generics.CreateAPIView):
             user.set_password(serializer.data['password'])  # сделать зашифрованный пароль
             user.is_active = True  # активация пользователя
             user.save()
-            return Response({'message': f'Пользователь {user.email} создан успешно.'})
+            return Response({'message': f'Пользователь {user.email} создан успешно.'}, status=status.HTTP_201_CREATED)
 
 
 class UserUpdateAPIView(generics.UpdateAPIView):
