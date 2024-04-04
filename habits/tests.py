@@ -45,9 +45,9 @@ class HabitTestCase(APITestCase):
         )
         self.assertEquals(
             response.json(),
-            {'id': 2, 'place': 'улица', 'action': 'прогулка', 'is_nice': True, 'periodicity': 1, 'fee': '',
-             'start_time': '2024-03-25T19:50:04.914506Z', 'execution_time': '00:02:00', 'is_published': False,
-             'user': 1, 'associated': None}
+            {'user': self.user.id, 'place': 'улица', 'action': 'прогулка', 'is_nice': True, 'associated': None,
+             'periodicity': 1, 'fee': '', 'start_time': '2024-03-25T19:50:04.914506Z', 'execution_time': '00:02:00',
+             'is_published': False}
         )
 
     def test_get_private_list_habits(self):
@@ -85,7 +85,7 @@ class HabitTestCase(APITestCase):
         )
         self.assertEquals(
             response.json(),
-            {'id': self.habit.id, 'associated': None, 'place': 'test', 'action': 'test', 'is_nice': True,
+            {'associated': None, 'place': 'test', 'action': 'test', 'is_nice': True,
              'periodicity': 1, 'fee': None, 'start_time': '2024-03-25T19:50:04.914506Z',
              'execution_time': '00:01:40', 'is_published': True, 'user': self.user.id}
         )
@@ -106,7 +106,7 @@ class HabitTestCase(APITestCase):
         )
         self.assertEquals(
             response.json(),
-            {'id': self.habit.id, 'place': 'test1', 'action': 'test', 'is_nice': True, 'periodicity': 1,
+            {'place': 'test1', 'action': 'test', 'is_nice': True, 'periodicity': 1,
              'fee': None, 'start_time': '2024-03-25T21:50:04.914506Z', 'execution_time': '00:01:00',
              'is_published': True, 'user': self.user.id, 'associated': None}
         )
